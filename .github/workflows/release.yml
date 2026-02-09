@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'   # runs on any tag push (e.g. v1.0.0, 1.0.0)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create release zip
+        run: |
+          ZIP_NAME="BoyCottSpotify-${{ github.ref_name }}.zip"
+          git archive --format=zip --prefix=BoyCottSpotify/ HEAD -o _temp.zip
+          unzip -q _temp.zip -d _temp
+          rm -rf _temp/BoyCottSpotify/.github _temp/BoyCottSpotify/.gitignore
+          cd _temp && zip -r -q "../$ZIP_NAME" BoyCottSpotify && cd ..
+          rm -rf _temp _temp.zip
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create Release and upload zip
+        uses: softprops/action-gh-release@v2
+        with:
+          files: BoyCottSpotify-${{ github.ref_name }}.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
