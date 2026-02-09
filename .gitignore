@@ -1,0 +1,6 @@
+venv/
+.venv/
+.ipynb_checkpoints/
+.cache/
+*.xlsx
+.DS_Store
