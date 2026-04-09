@@ -2,3 +2,4 @@ spotipy
 pandas
 openpyxl
 jupyter
+nbstripout
